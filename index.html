@@ -3,437 +3,917 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>We Forge - Build Stunning Websites Effortlessly</title>
+    <title>WebForge | Modern Website Builder</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS will go here */
+        :root {
+            --dark-bg: #121212;
+            --darker-bg: #0a0a0a;
+            --light-text: #e0e0e0;
+            --accent: #6e45e2;
+            --accent-dark: #4a2dbf;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            
+            /* Light theme variables */
+            --light-bg: #f5f5f5;
+            --lighter-bg: #ffffff;
+            --dark-text: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            overflow-x: hidden;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        body.light-theme {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--darker-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(110, 69, 226, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        body.light-theme nav {
+            background: rgba(245, 245, 245, 0.9);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--light-text), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.light-theme .logo {
+            background: linear-gradient(to right, var(--dark-text), var(--accent));
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        body.light-theme .nav-links a {
+            color: var(--dark-text);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--darker-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: var(--accent-dark);
+        }
+
+        .theme-toggle i {
+            font-size: 24px;
+            color: var(--light-text);
+        }
+
+        body.light-theme .theme-toggle {
+            background: var(--lighter-bg);
+        }
+
+        /* Music Player */
+        .music-player {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--darker-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: var(--transition);
+        }
+
+        .music-player:hover {
+            transform: scale(1.1);
+            background: var(--accent-dark);
+        }
+
+        .music-player i {
+            font-size: 24px;
+            color: var(--light-text);
+        }
+
+        .playlist {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: var(--darker-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            z-index: 999;
+            transform: translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        body.light-theme .playlist {
+            background: var(--lighter-bg);
+        }
+
+        .playlist.show {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .playlist h3 {
+            margin-bottom: 15px;
+            color: var(--light-text);
+        }
+
+        body.light-theme .playlist h3 {
+            color: var(--dark-text);
+        }
+
+        .playlist-item {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .playlist-item:hover {
+            background: rgba(110, 69, 226, 0.2);
+        }
+
+        .playlist-item.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .playlist-item i {
+            font-size: 18px;
+        }
+
+        /* Sections */
+        section {
+            min-height: 100vh;
+            padding: 100px 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.2;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--light-text), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s 0.3s forwards;
+        }
+
+        body.light-theme .hero h1 {
+            background: linear-gradient(to right, var(--dark-text), var(--accent));
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s 0.6s forwards;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s 0.9s forwards;
+            box-shadow: 0 10px 30px rgba(110, 69, 226, 0.3);
+        }
+
+        .cta-button:hover {
+            background: var(--accent-dark);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(110, 69, 226, 0.4);
+        }
+
+        /* About Section */
+        .about {
+            display: flex;
+            align-items: center;
+        }
+
+        .about-content {
+            flex: 1;
+            padding-right: 50px;
+        }
+
+        .about-image {
+            flex: 1;
+            height: 500px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Templates Section */
+        .templates {
+            text-align: center;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .template-card {
+            background: var(--darker-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        body.light-theme .template-card {
+            background: var(--lighter-bg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .template-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .template-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .template-info {
+            padding: 20px;
+        }
+
+        .template-info h3 {
+            margin-bottom: 10px;
+        }
+
+        /* Contact Section */
+        .contact {
+            display: flex;
+            align-items: center;
+        }
+
+        .contact-form {
+            flex: 1;
+            background: var(--darker-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        body.light-theme .contact-form {
+            background: var(--lighter-bg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: var(--light-text);
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        body.light-theme .form-group input,
+        body.light-theme .form-group textarea {
+            background: rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.1);
+            color: var(--dark-text);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(110, 69, 226, 0.2);
+        }
+
+        .contact-info {
+            flex: 1;
+            padding-left: 50px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(110, 69, 226, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 20px;
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--darker-bg);
+            padding: 50px 5%;
+            text-align: center;
+        }
+
+        body.light-theme footer {
+            background: var(--lighter-bg);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-text);
+            transition: var(--transition);
+        }
+
+        body.light-theme .social-links a {
+            background: rgba(0,0,0,0.05);
+            color: var(--dark-text);
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Video Animation */
+        @keyframes scaleIn {
+            0% {
+                transform: scale(1);
+                opacity: 0.2;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.3;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.2;
+            }
+        }
+
+        .hero-video {
+            animation: scaleIn 15s ease-in-out infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .about, .contact {
+                flex-direction: column;
+            }
+            
+            .about-content, .contact-form, .contact-info {
+                padding: 0;
+                margin-bottom: 50px;
+            }
+            
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .playlist {
+                width: 250px;
+                right: 20px;
+                bottom: 80px;
+            }
+        }
     </style>
 </head>
-  <link rel="stylesheet" href="style.css">
 <body>
-  <script src="script.js"></script>
     <!-- Preloader -->
-    <div class="preloader">
-        <div class="forge-animation">
-            <div class="hammer"></div>
-            <div class="anvil"></div>
-            <div class="sparks"></div>
-        </div>
-        <p>Forging your experience...</p>
+    <div class="preloader" id="preloader">
+        <div class="loader"></div>
+        <p>Loading WebForge...</p>
     </div>
 
-    <!-- Floating Cursor Effect -->
-    <div class="cursor"></div>
-    <div class="cursor-follower"></div>
-
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="logo" data-aos="fade-down">
-                <span class="we">We</span><span class="forge">Forge</span>
-            </div>
-            <div class="nav-links">
-                <a href="#features" class="nav-link" data-aos="fade-down" data-aos-delay="100">Features</a>
-                <a href="#templates" class="nav-link" data-aos="fade-down" data-aos-delay="200">Templates</a>
-                <a href="#pricing" class="nav-link" data-aos="fade-down" data-aos-delay="300">Pricing</a>
-                <a href="#testimonials" class="nav-link" data-aos="fade-down" data-aos-delay="400">Testimonials</a>
-                <a href="#contact" class="nav-link" data-aos="fade-down" data-aos-delay="500">Contact</a>
-            </div>
-            <div class="nav-buttons" data-aos="fade-down" data-aos-delay="600">
-                <a href="#" class="btn btn-outline">Login</a>
-                <a href="#" class="btn btn-primary">Start Building</a>
-            </div>
-            <div class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </div>
+    <nav>
+        <div class="logo">WebForge</div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#templates">Templates</a>
+            <a href="#contact">Contact</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="parallax-bg"></div>
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title" data-aos="fade-up" data-aos-delay="200">
-                    Forge Your <span class="highlight">Digital Presence</span> 
-                    <div class="typewriter" data-text="Website|Brand|Store|Portfolio|Blog"></div>
-                </h1>
-                <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="300">
-                    The most powerful, intuitive website builder for creators, entrepreneurs, and businesses.
-                </p>
-                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="400">
-                    <a href="#" class="btn btn-primary btn-lg pulse">Start Forging - It's Free</a>
-                    <a href="#" class="btn btn-outline btn-lg">Watch Demo <i class="fas fa-play"></i></a>
-                </div>
-            </div>
-            <div class="hero-image" data-aos="fade-left" data-aos-delay="500">
-                <div class="dashboard-mockup">
-                    <div class="screen"></div>
-                    <div class="editor-window floating"></div>
-                    <div class="preview-window floating"></div>
-                </div>
-            </div>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Music Player -->
+    <div class="music-player" id="musicPlayer">
+        <i class="fas fa-music"></i>
+        <audio id="bgMusic"></audio>
+    </div>
+
+    <!-- Playlist -->
+    <div class="playlist" id="playlist">
+        <h3>WebForge Playlist</h3>
+        <div class="playlist-item active" data-src="https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3">
+            <i class="fas fa-play"></i>
+            <span>Tech House Vibes</span>
         </div>
-        <div class="scroll-indicator">
-            <div class="mouse"></div>
+        <div class="playlist-item" data-src="https://assets.mixkit.co/music/preview/mixkit-hazy-after-hours-132.mp3">
+            <i class="fas fa-play"></i>
+            <span>Hazy After Hours</span>
+        </div>
+        <div class="playlist-item" data-src="https://assets.mixkit.co/music/preview/mixkit-relaxed-vibes-129.mp3">
+            <i class="fas fa-play"></i>
+            <span>Relaxed Vibes</span>
+        </div>
+        <div class="playlist-item" data-src="https://assets.mixkit.co/music/preview/mixkit-driving-ambition-32.mp3">
+            <i class="fas fa-play"></i>
+            <span>Driving Ambition</span>
+        </div>
+    </div>
+
+    <!-- Home Section -->
+    <section id="home" class="hero">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-digital-grid-537-large.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="hero-content">
+            <h1>Build Stunning Websites</h1>
+            <p>WebForge is the ultimate website builder for modern creators and businesses.</p>
+            <a href="#templates" class="cta-button">Explore Templates</a>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2>Powerful Features <span class="highlight">Forged</span> For You</h2>
-                <p>Everything you need to build your perfect website</p>
-            </div>
-            <div class="features-grid">
-                <!-- Feature 1 -->
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon bounce">
-                        <i class="fas fa-magic"></i>
-                    </div>
-                    <h3>Drag & Drop Builder</h3>
-                    <p>Intuitive interface that lets you create beautiful pages without coding.</p>
-                    <div class="hover-effect"></div>
-                </div>
-                
-                <!-- Feature 2 -->
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="feature-icon bounce">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>100% Responsive</h3>
-                    <p>Your website will look perfect on any device, automatically.</p>
-                    <div class="hover-effect"></div>
-                </div>
-                
-                <!-- Feature 3 -->
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="feature-icon bounce">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Blazing Fast</h3>
-                    <p>Optimized for speed with our global CDN and automatic optimizations.</p>
-                    <div class="hover-effect"></div>
-                </div>
-                
-                <!-- Feature 4 -->
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
-                    <div class="feature-icon bounce">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <h3>Design Freedom</h3>
-                    <p>Complete control over fonts, colors, and every design element.</p>
-                    <div class="hover-effect"></div>
-                </div>
-                
-                <!-- Feature 5 -->
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
-                    <div class="feature-icon bounce">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Built-in Security</h3>
-                    <p>SSL, DDoS protection, and regular backups included.</p>
-                    <div class="hover-effect"></div>
-                </div>
-                
-                <!-- Feature 6 -->
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
-                    <div class="feature-icon bounce">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>SEO Tools</h3>
-                    <p>Built-in optimization to help you rank higher in search results.</p>
-                    <div class="hover-effect"></div>
-                </div>
-            </div>
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="about-content">
+            <h2>About WebForge</h2>
+            <p>WebForge was born from a simple idea: creating beautiful, functional websites shouldn't be complicated. Our platform combines powerful tools with an intuitive interface to help you bring your vision to life.</p>
+            <p>With a focus on modern aesthetics and minimalist design, we've helped over 10,000 creators build their online presence.</p>
+            <a href="#contact" class="cta-button">Get in Touch</a>
         </div>
+        <div class="about-image" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
     </section>
 
     <!-- Templates Section -->
-    <section id="templates" class="templates parallax-section">
-        <div class="parallax-bg"></div>
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2>Beautiful <span class="highlight">Templates</span> For Every Need</h2>
-                <p>Start with a professionally designed template and make it your own</p>
-            </div>
-            <div class="template-carousel">
-                <!-- Template items will be added here with JS -->
-                <div class="template-item" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="template-preview">
-                        <img src="https://via.placeholder.com/600x400" alt="Business Template">
-                        <div class="template-overlay">
-                            <a href="#" class="btn btn-outline">Preview</a>
-                            <a href="#" class="btn btn-primary">Use Template</a>
-                        </div>
-                    </div>
-                    <h3>Modern Business</h3>
-                </div>
-                <!-- More template items... -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section id="pricing" class="pricing">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2>Simple, <span class="highlight">Transparent</span> Pricing</h2>
-                <p>Choose the plan that fits your needs</p>
-            </div>
-            <div class="pricing-switcher" data-aos="fade-up" data-aos-delay="100">
-                <span>Monthly</span>
-                <label class="switch">
-                    <input type="checkbox" id="pricing-toggle">
-                    <span class="slider round"></span>
-                </label>
-                <span>Yearly <small>(Save 20%)</small></span>
-            </div>
-            <div class="pricing-cards">
-                <!-- Basic Plan -->
-                <div class="pricing-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="pricing-header">
-                        <h3>Starter</h3>
-                        <div class="price">
-                            <span class="currency">$</span>
-                            <span class="amount">9</span>
-                            <span class="period">/month</span>
-                        </div>
-                        <p>Perfect for personal projects</p>
-                    </div>
-                    <ul class="features-list">
-                        <li><i class="fas fa-check"></i> 10 Pages</li>
-                        <li><i class="fas fa-check"></i> 5GB Storage</li>
-                        <li><i class="fas fa-check"></i> Basic Templates</li>
-                        <li><i class="fas fa-check"></i> Free SSL</li>
-                        <li><i class="fas fa-check"></i> Basic Support</li>
-                    </ul>
-                    <a href="#" class="btn btn-outline">Get Started</a>
-                    <div class="popular-tag">Most Popular</div>
-                </div>
-                
-                <!-- Pro Plan -->
-                <div class="pricing-card featured" data-aos="fade-up" data-aos-delay="300">
-                    <div class="pricing-header">
-                        <h3>Professional</h3>
-                        <div class="price">
-                            <span class="currency">$</span>
-                            <span class="amount">19</span>
-                            <span class="period">/month</span>
-                        </div>
-                        <p>Ideal for growing businesses</p>
-                    </div>
-                    <ul class="features-list">
-                        <li><i class="fas fa-check"></i> 50 Pages</li>
-                        <li><i class="fas fa-check"></i> 20GB Storage</li>
-                        <li><i class="fas fa-check"></i> Premium Templates</li>
-                        <li><i class="fas fa-check"></i> Free Domain</li>
-                        <li><i class="fas fa-check"></i> Priority Support</li>
-                    </ul>
-                    <a href="#" class="btn btn-primary">Get Started</a>
-                    <div class="popular-tag">Most Popular</div>
-                </div>
-                
-                <!-- Enterprise Plan -->
-                <div class="pricing-card" data-aos="fade-up" data-aos-delay="400">
-                    <div class="pricing-header">
-                        <h3>Enterprise</h3>
-                        <div class="price">
-                            <span class="currency">$</span>
-                            <span class="amount">49</span>
-                            <span class="period">/month</span>
-                        </div>
-                        <p>For large scale projects</p>
-                    </div>
-                    <ul class="features-list">
-                        <li><i class="fas fa-check"></i> Unlimited Pages</li>
-                        <li><i class="fas fa-check"></i> 100GB Storage</li>
-                        <li><i class="fas fa-check"></i> All Templates</li>
-                        <li><i class="fas fa-check"></i> Advanced Analytics</li>
-                        <li><i class="fas fa-check"></i> 24/7 Support</li>
-                    </ul>
-                    <a href="#" class="btn btn-outline">Get Started</a>
-                    <div class="popular-tag">Most Popular</div>
+    <section id="templates" class="templates">
+        <h2>Our Templates</h2>
+        <p>Choose from our collection of professionally designed templates</p>
+        
+        <div class="template-grid">
+            <div class="template-card">
+                <div class="template-image" style="background-image: url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                <div class="template-info">
+                    <h3>Portfolio Pro</h3>
+                    <p>Perfect for creatives and designers</p>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2>What Our <span class="highlight">Customers</span> Say</h2>
-                <p>Join thousands of satisfied users building with We Forge</p>
-            </div>
-            <div class="testimonial-carousel" data-aos="fade-up" data-aos-delay="100">
-                <!-- Testimonial items will be added here with JS -->
-                <div class="testimonial-item">
-                    <div class="testimonial-content">
-                        <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-                        <p>We Forge helped me launch my online store in just a weekend. The intuitive interface and beautiful templates made the process so simple!</p>
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <div class="testimonial-author">
-                        <img src="https://via.placeholder.com/80" alt="Sarah Johnson">
-                        <div class="author-info">
-                            <h4>Sarah Johnson</h4>
-                            <p>Owner, Boutique Store</p>
-                        </div>
-                    </div>
+            
+            <div class="template-card">
+                <div class="template-image" style="background-image: url('https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                <div class="template-info">
+                    <h3>Minimal Blog</h3>
+                    <p>Clean layout for writers and bloggers</p>
                 </div>
-                <!-- More testimonial items... -->
             </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta parallax-section">
-        <div class="parallax-bg"></div>
-        <div class="container">
-            <div class="cta-content" data-aos="zoom-in">
-                <h2>Ready to Forge Your Website?</h2>
-                <p>Join thousands of creators and businesses building with We Forge</p>
-                <a href="#" class="btn btn-primary btn-lg pulse">Start Building for Free</a>
+            
+            <div class="template-card">
+                <div class="template-image" style="background-image: url('https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');"></div>
+                <div class="template-info">
+                    <h3>E-Commerce</h3>
+                    <p>Optimized for online stores</p>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
     <section id="contact" class="contact">
-        <div class="container">
-            <div class="section-header" data-aos="fade-up">
-                <h2>Get In <span class="highlight">Touch</span></h2>
-                <p>We'd love to hear from you</p>
-            </div>
-            <div class="contact-content">
-                <div class="contact-info" data-aos="fade-right">
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <div class="info-content">
-                            <h3>Location</h3>
-                            <p>123 Forge Street, San Francisco, CA 94107</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="info-content">
-                            <h3>Email</h3>
-                            <p>hello@weforge.com</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-phone-alt"></i>
-                        </div>
-                        <div class="info-content">
-                            <h3>Phone</h3>
-                            <p>+1 (555) 123-4567</p>
-                        </div>
-                    </div>
+        <div class="contact-form">
+            <h2>Contact Us</h2>
+            <form id="contactForm">
+                <div class="form-group">
+                    <input type="text" placeholder="Your Name" required>
                 </div>
-                <div class="contact-form" data-aos="fade-left">
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <input type="text" id="name" placeholder="Your Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" id="email" placeholder="Your Email" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" id="subject" placeholder="Subject">
-                        </div>
-                        <div class="form-group">
-                            <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Send Message</button>
-                    </form>
+                <div class="form-group">
+                    <input type="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Your Message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="cta-button">Send Message</button>
+            </form>
+        </div>
+        <div class="contact-info">
+            <h2>Get In Touch</h2>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                    <h3>Location</h3>
+                    <p>123 Web Street, Digital City</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                    <h3>Email</h3>
+                    <p>hello@webforge.com</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <div>
+                    <h3>Phone</h3>
+                    <p>+1 (555) 123-4567</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-about" data-aos="fade-up">
-                    <div class="logo">
-                        <span class="we">We</span><span class="forge">Forge</span>
-                    </div>
-                    <p>The most powerful, intuitive website builder for creators, entrepreneurs, and businesses.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links" data-aos="fade-up" data-aos-delay="100">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#templates">Templates</a></li>
-                        <li><a href="#pricing">Pricing</a></li>
-                        <li><a href="#testimonials">Testimonials</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links" data-aos="fade-up" data-aos-delay="200">
-                    <h3>Resources</h3>
-                    <ul>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Documentation</a></li>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Community</a></li>
-                        <li><a href="#">Webinars</a></li>
-                    </ul>
-                </div>
-                <div class="footer-newsletter" data-aos="fade-up" data-aos-delay="300">
-                    <h3>Newsletter</h3>
-                    <p>Subscribe to get updates and web design tips</p>
-                    <form class="newsletter-form">
-                        <input type="email" placeholder="Your Email">
-                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
-                    </form>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 We Forge. All rights reserved.</p>
-                <div class="footer-legal">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Policy</a>
-                </div>
-            </div>
+    <footer>
+        <div class="logo">WebForge</div>
+        <p>© 2023 WebForge. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
         </div>
     </footer>
 
-    <!-- Back to Top Button -->
-    <a href="#" class="back-to-top" data-aos="fade-up" data-aos-delay="400">
-        <i class="fas fa-arrow-up"></i>
-    </a>
-
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
     <script>
-        // JavaScript will go here
+        // Preloader
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('preloader').style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById('preloader').style.display = 'none';
+                }, 500);
+            }, 1500);
+        });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('light-theme');
+            
+            // Update icon
+            const icon = themeToggle.querySelector('i');
+            if (document.body.classList.contains('light-theme')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Music Player Functionality
+        const musicPlayer = document.getElementById('musicPlayer');
+        const bgMusic = document.getElementById('bgMusic');
+        const playlist = document.getElementById('playlist');
+        const playlistItems = document.querySelectorAll('.playlist-item');
+        let isPlaying = false;
+        let currentTrack = 0;
+
+        // Initialize with first track
+        bgMusic.src = playlistItems[0].getAttribute('data-src');
+
+        // Toggle play/pause
+        musicPlayer.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent triggering document click
+            
+            if (isPlaying) {
+                bgMusic.pause();
+                musicPlayer.innerHTML = '<i class="fas fa-music"></i>';
+            } else {
+                bgMusic.play()
+                    .then(() => {
+                        musicPlayer.innerHTML = '<i class="fas fa-pause"></i>';
+                        isPlaying = true;
+                    })
+                    .catch(error => {
+                        console.log("Auto-play was prevented: ", error);
+                        // Show alert to user
+                        alert("Click anywhere on the page to enable audio playback");
+                    });
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // Enable audio on user interaction
+        document.addEventListener('click', function() {
+            // This empty handler just enables audio playback after user interaction
+        }, { once: true });
+
+        // Toggle playlist visibility
+        musicPlayer.addEventListener('dblclick', function(e) {
+            e.stopPropagation();
+            playlist.classList.toggle('show');
+        });
+
+        // Close playlist when clicking outside
+        document.addEventListener('click', function() {
+            playlist.classList.remove('show');
+        });
+
+        // Change track
+        playlistItems.forEach((item, index) => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                // Remove active class from all items
+                playlistItems.forEach(i => {
+                    i.classList.remove('active');
+                    i.querySelector('i').className = 'fas fa-play';
+                });
+                
+                // Add active class to clicked item
+                this.classList.add('active');
+                this.querySelector('i').className = 'fas fa-pause';
+                
+                // Change audio source
+                currentTrack = index;
+                bgMusic.src = this.getAttribute('data-src');
+                bgMusic.play();
+                isPlaying = true;
+                musicPlayer.innerHTML = '<i class="fas fa-pause"></i>';
+            });
+        });
+
+        // Play next track when current ends
+        bgMusic.addEventListener('ended', function() {
+            currentTrack = (currentTrack + 1) % playlistItems.length;
+            playlistItems.forEach(i => {
+                i.classList.remove('active');
+                i.querySelector('i').className = 'fas fa-play';
+            });
+            playlistItems[currentTrack].classList.add('active');
+            playlistItems[currentTrack].querySelector('i').className = 'fas fa-pause';
+            bgMusic.src = playlistItems[currentTrack].getAttribute('data-src');
+            bgMusic.play();
+        });
+
+        // Scroll Animations
+        const animateOnScroll = function() {
+            const templateCards = document.querySelectorAll('.template-card');
+            
+            templateCards.forEach((card, index) => {
+                const cardPosition = card.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (cardPosition < screenPosition) {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 200);
+                }
+            });
+        };
+
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            this.reset();
+        });
+
+        // Video Animation
+        const heroVideo = document.querySelector('.hero-video');
+        heroVideo.addEventListener('loadedmetadata', function() {
+            this.style.opacity = '0.2';
+        });
     </script>
 </body>
 </html>
